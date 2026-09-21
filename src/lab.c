@@ -77,3 +77,50 @@ int smtp_reply_is_final(const char *line)
 
   return 0;
 }
+
+char *smtp_dot_stuff(const char *message)
+{
+  if (message == NULL)
+  {
+    return NULL;
+  }
+
+  size_t length = strlen(message);
+  size_t extra_dots = 0;
+  int start_of_line = 1;
+
+  for (size_t i = 0; i < length; i++)
+  {
+    if (start_of_line && message[i] == '.')
+    {
+      extra_dots++;
+    }
+
+    start_of_line = message[i] == '\n';
+  }
+
+  char *new_message = malloc(length + extra_dots + 1);
+  if (new_message == NULL)
+  { // GCOVR_EXCL_START
+    return NULL;
+  } // GCOVR_EXCL_STOP
+
+  size_t new_index = 0;
+  start_of_line = 1;
+
+  for (size_t i = 0; i < length; i++)
+  {
+    if (start_of_line && message[i] == '.')
+    {
+      new_message[new_index] = '.';
+      new_index++;
+    }
+
+    new_message[new_index] = message[i];
+    new_index++;
+    start_of_line = message[i] == '\n';
+  }
+
+  new_message[new_index] = '\0';
+  return new_message;
+}

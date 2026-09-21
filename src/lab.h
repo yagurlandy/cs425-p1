@@ -26,4 +26,14 @@ int smtp_parse_reply_code(const char *line);
  */
 int smtp_reply_is_final(const char *line);
 
+/**
+ * @brief Adds an extra dot to each line that starts with a dot.
+ *
+ * The returned string uses malloc and must be freed by the caller.
+ *
+ * @param message The email message.
+ * @return The updated message, or NULL if memory could not be allocated.
+ */
+char *smtp_dot_stuff(const char *message);
+
 #endif // LAB_H

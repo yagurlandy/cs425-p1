@@ -50,10 +50,35 @@ void test_smtp_reply_is_final(void)
   TEST_ASSERT_EQUAL_INT(-1, smtp_reply_is_final("invalid\r\n"));
 }
 
+void test_smtp_dot_stuff(void)
+{
+  char *result = smtp_dot_stuff(
+      ".First line\r\n"
+      "Normal line\r\n"
+      "..Two dots\r\n");
+
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING(
+      "..First line\r\n"
+      "Normal line\r\n"
+      "...Two dots\r\n",
+      result);
+
+  free(result);
+
+  result = smtp_dot_stuff("");
+  TEST_ASSERT_NOT_NULL(result);
+  TEST_ASSERT_EQUAL_STRING("", result);
+  free(result);
+
+  TEST_ASSERT_NULL(smtp_dot_stuff(NULL));
+}
+
 int main(void) {
   UNITY_BEGIN();
   RUN_TEST(test_get_greeting);
   RUN_TEST(test_smtp_parse_reply_code);
   RUN_TEST(test_smtp_reply_is_final);
+  RUN_TEST(test_smtp_dot_stuff);
   return UNITY_END();
 }
